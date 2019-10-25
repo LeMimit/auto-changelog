@@ -69,7 +69,7 @@ class GitRepository(RepositoryInterface):
 
     def _issue_from_git_remote_url(self, remote: str):
         url = self._remote_url(remote)
-        return urljoin(url + '/', "issues")
+        return urljoin(url + '/', "issues/{id}")
 
     def _compare_from_git_remote_url(self, remote: str):
         url = self._remote_url(remote)
