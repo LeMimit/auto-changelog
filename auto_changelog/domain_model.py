@@ -27,11 +27,17 @@ class Note:
         sha: str,
         change_type: Union[ChangeType, str],
         description: str,
+        commit_url: str = "",
         scope: str = "",
         body: str = "",
         footer: str = "",
     ):
         self.sha = sha
+        if sha is None:
+            self.short_sha = None
+        else:
+            self.short_sha = sha[:7]
+        self.commit_url = commit_url
         self.change_type = ChangeType(change_type) if change_type else change_type  # TODO Hmm..
         self.scope = scope
         self.description = description
@@ -210,6 +216,7 @@ class RepositoryInterface(ABC):
         title: str,
         description: str,
         remote: str,
+        commit_url: Optional[str],
         issue_pattern: Optional[str],
         issue_url: Optional[str],
         compare_url: Optional[str],

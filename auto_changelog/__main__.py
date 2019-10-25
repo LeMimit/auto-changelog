@@ -28,6 +28,7 @@ from auto_changelog.repository import GitRepository
 @click.option("-v", "--latest-version", type=str, help="use specified version as latest release")
 @click.option("-u", "--unreleased", is_flag=True, default=False, help="Include section for unreleased changes")
 @click.option("--compare-url", default=None, help="override url for compares, use {current} and {previous} for tags")
+@click.option("--commit-url", default=None, help="Override url for commits, use {id} for commit id")
 @click.option("--issue-url", default=None, help="Override url for issues, use {id} for issue id")
 @click.option(
     "--issue-pattern",
@@ -55,6 +56,7 @@ def main(
     latest_version: str,
     unreleased: bool,
     compare_url,
+    commit_url,
     issue_url,
     issue_pattern,
     tag_pattern,
