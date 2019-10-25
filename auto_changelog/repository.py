@@ -22,11 +22,13 @@ class GitRepository(RepositoryInterface):
         title: str = "Changelog",
         description: str = "",
         remote: str = "origin",
+        commit_url: Optional[str] = None,
         issue_pattern: Optional[str] = None,
         issue_url: Optional[str] = None,
         starting_commit: str = "",
         stopping_commit: str = "HEAD",
     ) -> Changelog:
+        commit_url = commit_url or self._commit_from_git_remote_url(remote)
         issue_url = issue_url or self._issue_from_git_remote_url(remote)
         changelog = Changelog(title, description, issue_pattern, issue_url)
         iter_rev = self._get_iter_rev(starting_commit, stopping_commit)
@@ -43,16 +45,20 @@ class GitRepository(RepositoryInterface):
                 skip = False
 
             if first_commit and commit not in self.commit_tags_index:
-                changelog.add_release(self._latest_version, date.today(), sha256())
+                changelog.add_release(self._latest_version, date.today(), sha256().hexdigest())
             first_commit = False
 
             if commit in self.commit_tags_index:
                 attributes = self._extract_release_args(commit, self.commit_tags_index[commit])
                 changelog.add_release(*attributes)
 
-            attributes = self._extract_note_args(commit)
+            attributes = self._extract_note_args(commit, commit_url)
             changelog.add_note(*attributes)
         return changelog
+
+    def _commit_from_git_remote_url(self, remote: str):
+        url = self._remote_url(remote)
+        return urljoin(url + '/', "commit/{id}")
 
     def _issue_from_git_remote_url(self, remote: str):
         url = self._remote_url(remote)
@@ -119,12 +125,13 @@ class GitRepository(RepositoryInterface):
         return title, date_, sha
 
     @staticmethod
-    def _extract_note_args(commit) -> Tuple[str, str, str, str, str, str]:
+    def _extract_note_args(commit, commit_url: str) -> Tuple[str, str, str, str, str, str, str]:
         """ Extracts arguments for release Note from commit """
         sha = commit.hexsha
+        commit_url = commit_url.format(id=sha)
         message = commit.message
         type_, scope, description, body, footer = GitRepository._parse_conventional_commit(message)
-        return sha, type_, description, scope, body, footer
+        return sha, type_, description, commit_url, scope, body, footer
 
     @staticmethod
     def _parse_conventional_commit(message: str) -> Tuple[str, str, str, str, str]:

@@ -27,6 +27,7 @@ from auto_changelog.repository import GitRepository
 @click.option("-r", "--remote", default="origin", help="Specify git remote to use for links")
 @click.option("-v", "--latest-version", type=str, help="use specified version as latest release")
 @click.option("-u", "--unreleased", is_flag=True, default=False, help="Include section for unreleased changes")
+@click.option("--commit-url", default=None, help="Override url for commits, use {id} for commit id")
 @click.option("--issue-url", default=None, help="Override url for issues, use {id} for issue id")
 @click.option(
     "--issue-pattern",
@@ -44,6 +45,7 @@ def main(
     remote,
     latest_version: str,
     unreleased: bool,
+    commit_url,
     issue_url,
     issue_pattern,
     stdout: bool,
