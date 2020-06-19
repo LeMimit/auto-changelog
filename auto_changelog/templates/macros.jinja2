@@ -3,7 +3,7 @@
 #### {{ title }}
 
 {% for note in notes -%}
-*{% if note.scope %} ({{ note.scope }}):{% endif %} {{ note.description }}{% if note.short_sha %} [(`{{note.short_sha}}`)]({{note.commit_url}}){% endif %}
+*{% if note.scope %} **{{ note.scope }}**:{% endif %} {{ note.description }}{% if note.short_sha %} [(`{{note.short_sha}}`)]({{note.commit_url}}){% endif %}
 {% endfor -%}
 {% endif -%}
 {% endmacro -%}
