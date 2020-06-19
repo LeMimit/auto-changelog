@@ -176,9 +176,9 @@ class GitRepository(RepositoryInterface):
     def _parse_conventional_commit(message: str) -> Tuple[str, str, str, str, str]:
         type_ = scope = description = body = footer = ""
         # TODO this is less restrictive version of re. I have somewhere more restrictive one, maybe as option?
-        match = re.match(r"^(\w+)(\(\w+\))?: (.*)(\n\n.+)?(\n\n.+)?$", message)
+        match = re.fullmatch(r"^(\w+)(\(\w+\))?: (.*)\n\n(?:.|\n)*$", message)
         if match:
-            type_, scope, description, body, footer = match.groups(default="")
+            type_, scope, description = match.groups(default="")
         if scope:
             scope = scope[1:-1]
         if body:
